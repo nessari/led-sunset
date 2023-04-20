@@ -16,42 +16,40 @@ now = datetime.now()
 print('Now: ', now)
 print('Current time: ', now.time())
 
-# create dates for the upcoming week
-
 today = datetime.today()
 # print(today)
 # print(today.date())
 
-week = [(today + timedelta(days=x)).strftime('%Y-%m-%d') for x in range (7)]
-print('Dates of the week:', week)
-
 # TODO: calculate time zone and dst shifts
 # CEST, DST
-
-sunsets = []
 
 def format_time(time_string):
     format = '%I:%M:%S %p'
     time = datetime.strptime(time_string, format)
     return time
 
-# call sunrise-sunset API
+def get_data_from_API():
+    sunsets = []
+    # create dates for the upcoming week
+    week = [(today + timedelta(days=x)).strftime('%Y-%m-%d') for x in range (7)]
+    # print('Dates of the week:', week)
+    # call sunrise-sunset API
+    for date in week:
+        URL = f'https://api.sunrise-sunset.org/json?lat={latitude}&lng={longitude}&date={date}'
+        resp = json.loads(requests.request('GET', URL).text)
+        sunset = resp['results']['sunset']
+        sunsets.append(sunset)
+    weekly_sunsets = dict(zip(week, sunsets))
+    # print('Data to json: ', weekly_sunsets)
+    return weekly_sunsets
 
-for date in week:
-    URL = f'https://api.sunrise-sunset.org/json?lat={latitude}&lng={longitude}&date={date}'
-    resp = json.loads(requests.request('GET', URL).text)
-    sunset = resp['results']['sunset']
-    sunsets.append(sunset)
-
+sunsets = get_data_from_API()
 print('Sunsets', sunsets)
-
-weekly_sunsets = dict(zip(week, sunsets))
-print('Data to json: ', weekly_sunsets)
 
 # write data to json file
 
 with open('sunsets.json', 'w') as file:
-    json.dump(weekly_sunsets, file)
+    json.dump(sunsets, file)
 
 
 # TODO: adjust for time zone and summer shifts
