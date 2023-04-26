@@ -11,6 +11,8 @@ import requests
 LATITUDE = '47.4979937'
 LONGITUDE = '19.0403594'
 
+COMMAND = 'uhubctl -l 1-1 --ports 2 -a 0'.split()
+
 five_minutes = timedelta(minutes=5)
 now = datetime.now()
 today = datetime.today()
@@ -53,7 +55,7 @@ def switch_if_sun_sets():
 
     # switch usb on
     if now >= (cest_sunset - five_minutes) and now <= (cest_sunset + five_minutes):
-        subprocess.run(['uhubctl', '-l', '1-1', '--ports', '2', '-a', '1'])
+        subprocess.run(COMMAND)
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
