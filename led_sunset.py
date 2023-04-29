@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 
 import json
+import os
 import subprocess
 import sys
 
@@ -10,6 +11,8 @@ import requests
 
 LATITUDE = '47.4979937'
 LONGITUDE = '19.0403594'
+
+CACHE_NAME = 'sunsets.json'
 
 COMMAND = 'uhubctl -l 1-1 --ports 2 -a 0'.split()
 
@@ -42,12 +45,16 @@ def cache():
     sunsets = get_data_from_API()
     print('Sunsets', sunsets)
     # write data to json file
-    with open('sunsets.json', 'w') as file:
+    with open(CACHE_NAME, 'w') as file:
         json.dump(sunsets, file)
 
 def switch_if_sun_sets():
+    # check if there is cached data, otherwise bail out
+    if not os.path.exists(CACHE_NAME):
+        sys.exit('No cached data! Run with the --cache flag first!')
+
     # read todays sunset from json
-    with open('sunsets.json') as sunset_data:
+    with open(CACHE_NAME) as sunset_data:
         cached_sunsets = json.load(sunset_data)
 
     todays_sunset = parse_time(cached_sunsets[str(today.date())])
