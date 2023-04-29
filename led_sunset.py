@@ -14,7 +14,7 @@ LONGITUDE = '19.0403594'
 
 CACHE_NAME = 'sunsets.json'
 
-COMMAND = 'uhubctl -l 1-1 --ports 2 -a 0'.split()
+COMMAND = 'uhubctl -l 1-1 --ports 2 -a 1'.split()
 
 five_minutes = timedelta(minutes=5)
 now = datetime.now()
