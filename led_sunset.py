@@ -26,7 +26,8 @@ today = datetime.today()
 def parse_time(time_string):
     format = '%I:%M:%S %p'
     time = datetime.strptime(time_string, format)
-    return time
+    sunset_time = datetime.combine(today.date(), time.time())
+    return sunset_time
 
 def shift_time(time_string, offset):
     """Shifts the string representation of time by the specified number of hours"""
@@ -48,7 +49,6 @@ def get_data_from_API():
 
 def cache():
     sunsets = get_data_from_API()
-    print('Sunsets', sunsets)
     # write data to json file
     with open(CACHE_NAME, 'w') as file:
         json.dump(sunsets, file)
@@ -65,7 +65,7 @@ def switch_if_sun_sets():
     todays_sunset = parse_time(cached_sunsets[str(today.date())])
 
     # switch usb on
-    if now >= (todays_sunset - five_minutes) and now <= (todays_sunset + five_minutes):
+    if now >= (todays_sunset - five_minutes) and now < (todays_sunset + five_minutes):
         subprocess.run(COMMAND)
 
 if __name__ == '__main__':
