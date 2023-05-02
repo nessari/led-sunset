@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 
 import json
 import os
-import subprocess
 import sys
 
 import requests
@@ -14,7 +13,7 @@ LONGITUDE = '19.0403594'
 
 CACHE_NAME = 'sunsets.json'
 
-COMMAND = 'uhubctl -l 1-1 --ports 2 -a 1'.split()
+COMMAND = '/usr/sbin/uhubctl -l 1-1 --ports 2 -a 1'
 
 five_minutes = timedelta(minutes=5)
 now = datetime.now()
@@ -66,7 +65,7 @@ def switch_if_sun_sets():
 
     # switch usb on
     if now >= (todays_sunset - five_minutes) and now < (todays_sunset + five_minutes):
-        subprocess.run(COMMAND)
+        os.system(COMMAND)
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
